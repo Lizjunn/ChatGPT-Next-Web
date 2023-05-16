@@ -62,6 +62,9 @@ const cn = {
   Login: {
     Title: "登录",
   },
+  Register: {
+    Title: "注册",
+  },
   Settings: {
     Title: "设置",
     SubTitle: "设置选项",

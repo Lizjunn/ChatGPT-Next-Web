@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import * as ReactDOM from "react-dom";
 import loginStyle from "./login.module.scss";
 import Locale from "../locales";
@@ -8,9 +9,17 @@ import { setLocalStorage, getLocalStorage } from "../common/localStorage";
 import { useNavigate } from "react-router-dom";
 const serverConfig = getServerSideConfig();
 
-export function Login(this: any) {
-  const email = React.createRef<HTMLInputElement>();
-  const password = React.createRef<HTMLInputElement>();
+function getParams(url: string, params: string) {
+  console.log("执行");
+  var res = new RegExp("(?:&|/?)" + params + "=([^&$]+)").exec(url);
+  console.log(res);
+
+  return res ? res[1] : "";
+}
+
+export function Register(this: any) {
+  const input1Ref = React.createRef<HTMLInputElement>();
+  const input2Ref = React.createRef<HTMLInputElement>();
 
   const navigate = useNavigate();
   const loginSuccess = () => {
@@ -22,30 +31,23 @@ export function Login(this: any) {
     // location.href = '/#/'
   }
 
+  const id = getParams(window.location.search, "id");
+
+  console.log(id); // 2
+
   const loginClick = () => {
-    console.log("Input 1 value: ", email.current?.value);
-    console.log("Input 2 value: ", password.current?.value);
+    console.log("Input 1 value: ", input1Ref.current?.value);
+    console.log("Input 2 value: ", input2Ref.current?.value);
 
-    let email_val = email.current?.value.trim();
-    let password_val = password.current?.value.trim();
     let host = serverConfig.apiHost;
-
-    if (!email_val) {
-      alert("请输入邮箱");
-      return;
-    }
-    if (!password_val) {
-      alert("请输入密码");
-      return;
-    }
     fetch(host + "/api/auth/email-login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: email_val,
-        password: password_val,
+        email: input1Ref.current?.value,
+        password: input2Ref.current?.value,
       }),
     })
       .then((response) => response.json())
@@ -73,7 +75,9 @@ export function Login(this: any) {
     <div style={{ position: "relative" }}>
       <div className="window-header">
         <div className="window-header-title">
-          <div className="window-header-main-title">{Locale.Login.Title}</div>
+          <div className="window-header-main-title">
+            {Locale.Register.Title}
+          </div>
         </div>
       </div>
       <div className={loginStyle["login-page"]}>
@@ -84,29 +88,47 @@ export function Login(this: any) {
           <div className={loginStyle["login-page-main"]}>
             <div className={loginStyle["login-page-email-div"]}>
               <div className={loginStyle["login-page-div-text"]}>
-                邮&nbsp;&nbsp;&nbsp;&nbsp;箱：
+                邮&nbsp;&nbsp;&nbsp;&nbsp;箱:
               </div>
               <input
-                ref={email}
+                ref={input1Ref}
                 className={loginStyle["login-page-div-input-email"]}
                 type="text"
                 placeholder="请输入邮箱"
               />
             </div>
-            {/*<div className={loginStyle["login-page-div"]}>*/}
-            {/*    <div className={loginStyle["login-page-div-text"]}>验证码：</div>*/}
-            {/*    <input className={loginStyle["login-page-div-input-code"]} type="text" placeholder="请输入验证码"/>*/}
-            {/*    <div className={loginStyle["login-page-div-input-code-get"]} onClick={() => getCode()}>获取验证码</div>*/}
-            {/*</div>*/}
+            <div className={loginStyle["login-page-div"]}>
+              <div className={loginStyle["login-page-div-text"]}>验证码:</div>
+              <input
+                className={loginStyle["login-page-div-input-code"]}
+                type="text"
+                placeholder="请输入验证码"
+              />
+              <div
+                className={loginStyle["login-page-div-input-code-get"]}
+                onClick={() => getCode()}
+              >
+                获取验证码
+              </div>
+            </div>
             <div className={loginStyle["login-page-div"]}>
               <div className={loginStyle["login-page-div-text"]}>
-                密&nbsp;&nbsp;&nbsp;&nbsp;码：
+                密&nbsp;&nbsp;&nbsp;&nbsp;码:
               </div>
               <input
-                ref={password}
+                ref={input2Ref}
                 className={loginStyle["login-page-div-input-email"]}
                 type="password"
                 placeholder="请输入密码"
+              />
+            </div>
+            <div className={loginStyle["login-page-div"]}>
+              <div className={loginStyle["login-page-div-text"]}>邀请码:</div>
+              <input
+                ref={input2Ref}
+                className={loginStyle["login-page-div-input-email"]}
+                type="password"
+                placeholder="请输入邀请码(非必填)"
               />
             </div>
             <div
@@ -114,11 +136,11 @@ export function Login(this: any) {
               style={{ marginTop: "30px" }}
             >
               <button className={loginStyle["commit-btn"]} onClick={loginClick}>
-                登录
+                注册
               </button>
             </div>
             <p style={{ color: "#8d8c8c", fontSize: "15px" }} onClick={goLogin}>
-              去注册~
+              去登录~
             </p>
           </div>
         </div>
@@ -127,7 +149,7 @@ export function Login(this: any) {
   );
 
   function goLogin() {
-    location.href = "/#/register";
+    location.href = "/#/login";
   }
 
   function getCode() {

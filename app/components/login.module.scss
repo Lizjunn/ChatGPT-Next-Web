@@ -23,14 +23,15 @@
 }
 .login-page-main{
   width: 330px;
-  height: 300px;
+  //height: 300px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   border-radius: 10px;
-  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
   margin-top: -25px;
+  //background: antiquewhite;
 }
 .login-page-main-icon{
   width: 50px;
@@ -41,6 +42,14 @@
   align-items: center;
   border-radius: 10px;
   z-index: 999;
+}
+.login-page-email-div{
+  width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 85px;
 }
 .login-page-div {
   width: 300px;
@@ -100,4 +109,7 @@
   border-radius: 10px;
   color: #ffffff;
   font-size: 15px;
+}
+.login-page-toReg{
+  margin-top: 20px;
 }

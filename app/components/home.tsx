@@ -53,11 +53,15 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
 const Login = dynamic(async () => (await import("./login")).Login, {
   loading: () => <Loading noLogo />,
 });
-checkLogin();
+const Register = dynamic(async () => (await import("./register")).Register, {
+  loading: () => <Loading noLogo />,
+});
 export function useSwitchTheme() {
   const config = useAppConfig();
 
   useEffect(() => {
+    const storedValue = window.localStorage.getItem("access_token");
+    console.log("storedValue:" + storedValue);
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
 
@@ -83,6 +87,7 @@ export function useSwitchTheme() {
       metaDescriptionLight?.setAttribute("content", themeColor);
     }
   }, [config.theme]);
+  checkLogin();
 }
 
 const useHasHydrated = () => {
@@ -122,6 +127,7 @@ function Screen() {
           <Route path={Path.Chat} element={<Chat />} />
           <Route path={Path.Settings} element={<Settings />} />
           <Route path={Path.Login} element={<Login />} />
+          <Route path={Path.Register} element={<Register />} />
         </Routes>
       </div>
     </div>
