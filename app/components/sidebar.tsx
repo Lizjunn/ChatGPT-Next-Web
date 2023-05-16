@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -14,6 +14,7 @@ import PluginIcon from "../icons/plugin.svg";
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
+import { getLocalStorage, logout } from "../common/localStorage";
 
 import {
   MAX_SIDEBAR_WIDTH,
@@ -27,6 +28,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
+import ReturnIcon from "../icons/return.svg";
+import { func } from "prop-types";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -80,6 +83,11 @@ function useDragSideBar() {
   };
 }
 
+function getIsShowLogout() {
+  let token = getLocalStorage("access_token");
+  return !!token;
+}
+
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
@@ -88,7 +96,6 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
 
   const config = useAppConfig();
-
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${
@@ -133,16 +140,26 @@ export function SideBar(props: { className?: string }) {
 
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
-          <div className={styles["sidebar-action"] + " " + styles.mobile}>
-            <IconButton
-              icon={<CloseIcon />}
-              onClick={() => {
-                if (confirm(Locale.Home.DeleteChat)) {
-                  chatStore.deleteSession(chatStore.currentSessionIndex);
-                }
-              }}
-            />
-          </div>
+          {/*<div className={styles["sidebar-action"] + " " + styles.mobile}>*/}
+          {/*  <IconButton*/}
+          {/*    icon={<CloseIcon />}*/}
+          {/*    onClick={() => {*/}
+          {/*      if (confirm(Locale.Home.DeleteChat)) {*/}
+          {/*        chatStore.deleteSession(chatStore.currentSessionIndex);*/}
+          {/*      }*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</div>*/}
+          {getIsShowLogout() && (
+            <div className={styles["sidebar-action"]}>
+              <IconButton
+                icon={<ReturnIcon />}
+                text={shouldNarrow ? undefined : Locale.Home.Logout}
+                onClick={logout}
+                shadow
+              />
+            </div>
+          )}
           <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />

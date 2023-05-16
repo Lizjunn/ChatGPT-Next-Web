@@ -1,3 +1,9 @@
+.center{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .login-page {
   border-bottom: rgba(0, 0, 0, 0.1) 1px solid;
   display: flex;
@@ -5,19 +11,93 @@
   justify-content: center;
   align-items: center;
   height: 100vh; /* 设置容器高度为视窗高度 */
-  margin-top: -200px;
+  margin-top: -100px;
 }
-.login-page-div {
-  width: 260px;
-  height: 36px;
-  background: skyblue;
-  margin-top: 10px;
+.login-page-box {
+  width: 330px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.login-page-main{
+  width: 330px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
+  border-radius: 10px;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+  margin-top: -25px;
 }
-.login-page-div-input {
-  width: 260px;
+.login-page-main-icon{
+  width: 50px;
+  height: 50px;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  z-index: 999;
+}
+.login-page-div {
+  width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 20px;
+}
+.login-page-div-center {
+  width: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+.login-page-div-text{
+  width: 70px;
+}
+.login-page-div-input-email {
+  width: 80%;
+  max-width:100% !important;
+  border-color: #cccccc !important;
+  outline-color:rgb(29 147 171) !important;
+  text-align: left;
+}
+.login-page-div-input-code {
+  width: 40%;
+  border-color: #cccccc !important;
+  outline-color:rgb(29 147 171) !important;
+  text-align: left;
+}
+.login-page-div-input-code-get{
+  margin-left: 10px;
+  width: 100px;
+  height: 100%;
+  border: 1px solid var(--primary);
+  background-color: rgb(29, 147, 171);
+
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 15px;
+}
+.margin-top-20{
+  margin-top: 10px;
+}
+.commit-btn{
+  width: 40%;
+  height: 36px;
+  border: 1px solid var(--primary);
+  background-color: rgb(29, 147, 171);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 15px;
 }

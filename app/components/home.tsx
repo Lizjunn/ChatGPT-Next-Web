@@ -14,6 +14,7 @@ import { getCSSVar, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
+import { checkLogin } from "../common/localStorage";
 
 import {
   HashRouter as Router,
@@ -52,7 +53,7 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
 const Login = dynamic(async () => (await import("./login")).Login, {
   loading: () => <Loading noLogo />,
 });
-
+checkLogin();
 export function useSwitchTheme() {
   const config = useAppConfig();
 

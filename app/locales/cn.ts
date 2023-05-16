@@ -52,9 +52,15 @@ const cn = {
   },
   Home: {
     NewChat: "新的聊天",
+    Logout: "退出",
+    LogoutSuccess: "退出成功",
+    LogoutFail: "退出失败",
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
     Revert: "撤销",
+  },
+  Login: {
+    Title: "登录",
   },
   Settings: {
     Title: "设置",
