@@ -60,8 +60,6 @@ export function useSwitchTheme() {
   const config = useAppConfig();
 
   useEffect(() => {
-    const storedValue = window.localStorage.getItem("access_token");
-    console.log("storedValue:" + storedValue);
     document.body.classList.remove("light");
     document.body.classList.remove("dark");
 

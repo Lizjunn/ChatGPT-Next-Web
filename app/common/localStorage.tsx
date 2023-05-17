@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useNavigate, redirect } from "react-router-dom";
+import { useNavigate, redirect, useLocation } from "react-router-dom";
 import loginStyle from "../components/login.module.scss";
 import * as React from "react";
 import { showToast } from "../components/ui-lib";
@@ -43,10 +43,21 @@ export const getLocalStorage = (key: string) => {
  * 检查是否登录
  */
 export const checkLogin = () => {
-  let token = getLocalStorage("access_token");
+  const whiteList = ["register"];
 
-  if (!token) {
-    location.href = "/#/login";
+  const url1 = window.location.href;
+  const regex = /#\/([^?/]+)/; // 匹配斜杠后面的非斜杠字符
+  const match1 = url1.match(regex);
+  let pageName = "";
+  if (match1) {
+    pageName = match1[1];
+  }
+
+  if (!whiteList.includes(pageName)) {
+    let token = getLocalStorage("access_token");
+    if (!token) {
+      location.href = "/#/login";
+    }
   }
 };
 

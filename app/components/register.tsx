@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import * as ReactDOM from "react-dom";
 import loginStyle from "./login.module.scss";
 import Locale from "../locales";
@@ -10,17 +10,16 @@ import { useNavigate } from "react-router-dom";
 const serverConfig = getServerSideConfig();
 
 function getParams(url: string, params: string) {
-  console.log("执行");
   var res = new RegExp("(?:&|/?)" + params + "=([^&$]+)").exec(url);
-  console.log(res);
-
   return res ? res[1] : "";
 }
 
 export function Register(this: any) {
   const input1Ref = React.createRef<HTMLInputElement>();
   const input2Ref = React.createRef<HTMLInputElement>();
+  const InvitationCodeRef = React.createRef<HTMLInputElement>();
 
+  const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
   const loginSuccess = () => {
     navigate("/");
@@ -31,9 +30,20 @@ export function Register(this: any) {
     // location.href = '/#/'
   }
 
-  const id = getParams(window.location.search, "id");
+  const InvitationCode = getParams(window.location.href, "InvitationCode");
+  if (InvitationCode) {
+    // useEffect(() => {
+    //     setInputValue(InvitationCode);
+    // }, [InvitationCode]);
+  } else {
+    // useEffect(() => {
+    //     setInputValue('');
+    // }, [InvitationCode]);
+  }
 
-  console.log(id); // 2
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
 
   const loginClick = () => {
     console.log("Input 1 value: ", input1Ref.current?.value);
@@ -125,10 +135,12 @@ export function Register(this: any) {
             <div className={loginStyle["login-page-div"]}>
               <div className={loginStyle["login-page-div-text"]}>邀请码:</div>
               <input
-                ref={input2Ref}
+                ref={InvitationCodeRef}
                 className={loginStyle["login-page-div-input-email"]}
-                type="password"
+                type="text"
                 placeholder="请输入邀请码(非必填)"
+                value={inputValue}
+                onChange={handleInputChange}
               />
             </div>
             <div
