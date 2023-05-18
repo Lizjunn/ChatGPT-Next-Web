@@ -15,8 +15,9 @@ function getParams(url: string, params: string) {
 }
 
 export function Register(this: any) {
-  const input1Ref = React.createRef<HTMLInputElement>();
-  const input2Ref = React.createRef<HTMLInputElement>();
+  const email = React.createRef<HTMLInputElement>();
+  const code = React.createRef<HTMLInputElement>();
+  const password = React.createRef<HTMLInputElement>();
   const InvitationCodeRef = React.createRef<HTMLInputElement>();
 
   const [inputValue, setInputValue] = useState("");
@@ -31,33 +32,31 @@ export function Register(this: any) {
   }
 
   const InvitationCode = getParams(window.location.href, "InvitationCode");
-  if (InvitationCode) {
-    // useEffect(() => {
-    //     setInputValue(InvitationCode);
-    // }, [InvitationCode]);
-  } else {
-    // useEffect(() => {
-    //     setInputValue('');
-    // }, [InvitationCode]);
-  }
+  useEffect(() => {
+    setInputValue(InvitationCode);
+  }, [InvitationCode]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
   const loginClick = () => {
-    console.log("Input 1 value: ", input1Ref.current?.value);
-    console.log("Input 2 value: ", input2Ref.current?.value);
+    console.log("Input 1 value: ", email.current?.value);
+    console.log("Input 2 value: ", code.current?.value);
+    console.log("Input 3 value: ", password.current?.value);
+    console.log("Input 4 value: ", InvitationCodeRef.current?.value);
 
     let host = serverConfig.apiHost;
-    fetch(host + "/api/auth/email-login", {
+    fetch(host + "/api/auth/email-register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: input1Ref.current?.value,
-        password: input2Ref.current?.value,
+        email: email.current?.value,
+        password: password.current?.value,
+        code: code.current?.value,
+        invitationCode: InvitationCodeRef.current?.value,
       }),
     })
       .then((response) => response.json())
@@ -101,7 +100,7 @@ export function Register(this: any) {
                 邮&nbsp;&nbsp;&nbsp;&nbsp;箱:
               </div>
               <input
-                ref={input1Ref}
+                ref={email}
                 className={loginStyle["login-page-div-input-email"]}
                 type="text"
                 placeholder="请输入邮箱"
@@ -110,6 +109,7 @@ export function Register(this: any) {
             <div className={loginStyle["login-page-div"]}>
               <div className={loginStyle["login-page-div-text"]}>验证码:</div>
               <input
+                ref={code}
                 className={loginStyle["login-page-div-input-code"]}
                 type="text"
                 placeholder="请输入验证码"
@@ -126,7 +126,7 @@ export function Register(this: any) {
                 密&nbsp;&nbsp;&nbsp;&nbsp;码:
               </div>
               <input
-                ref={input2Ref}
+                ref={password}
                 className={loginStyle["login-page-div-input-email"]}
                 type="password"
                 placeholder="请输入密码"
