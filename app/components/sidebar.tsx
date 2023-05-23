@@ -30,6 +30,9 @@ import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
 import ReturnIcon from "../icons/return.svg";
 import { func } from "prop-types";
+import chatStyle from "./chat.module.scss";
+import { getServerSideConfig } from "../config/server";
+const serverConfig = getServerSideConfig();
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -96,6 +99,35 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
 
   const config = useAppConfig();
+
+  const [num, setNum] = useState(0); // 定义内容状态
+  let token = getLocalStorage("access_token");
+  if (!token) {
+    location.href = "/#/login";
+  } else {
+    // fetch(serverConfig.apiHost + "/api/auth/get-send-num", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Authorization": token
+    //   },
+    //   body: JSON.stringify({}),
+    // })
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //       console.log(data.data.send_num)
+    //       if (data.code !== 200 && data.code !== 10001) {
+    //         alert(data.message);
+    //       } else if (data.code == 10001) {
+    //         localStorage.removeItem('access_token');
+    //         location.href = '/#/login'
+    //       } else {
+    //         setNum(data.data.send_num)
+    //       }
+    //     })
+    //     .catch((error) => {
+    //     });
+  }
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${
@@ -105,6 +137,7 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>ChatGPT AI 助手</div>
         <div className={styles["sidebar-sub-title"]}>构建您自己的 AI 助手</div>
+        {/*<div className={styles["sidebar-sub-title"]}>可用次数：{num}</div>*/}
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
@@ -129,11 +162,11 @@ export function SideBar(props: { className?: string }) {
 
       <div
         className={styles["sidebar-body"]}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            navigate(Path.Home);
-          }
-        }}
+        // onClick={(e) => {
+        //   if (e.target === e.currentTarget) {
+        //     navigate(Path.Home);
+        //   }
+        // }}
       >
         <ChatList narrow={shouldNarrow} />
       </div>

@@ -127,6 +127,7 @@ const cn = {
         Title: "提示词列表",
         Add: "新建",
         Search: "搜索提示词",
+        Share: "分享",
       },
       EditModal: {
         Title: "编辑提示词",

@@ -7,6 +7,8 @@ import ChatGptIcon from "../icons/chatgpt.svg";
 import { getServerSideConfig } from "../config/server";
 import { setLocalStorage, getLocalStorage } from "../common/localStorage";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "./ui-lib";
+
 const serverConfig = getServerSideConfig();
 
 function getParams(url: string, params: string) {
@@ -19,16 +21,18 @@ export function Register(this: any) {
   const code = React.createRef<HTMLInputElement>();
   const password = React.createRef<HTMLInputElement>();
   const InvitationCodeRef = React.createRef<HTMLInputElement>();
-
+  const [showContent, setShowContent] = useState(true); // 定义布尔值状态
+  const [content, setContent] = useState(""); // 定义内容状态
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(60);
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
-  const loginSuccess = () => {
-    navigate("/");
+  const registerSuccess = () => {
+    navigate("/#/login");
   };
 
   let token = getLocalStorage("access_token");
   if (token) {
-    // location.href = '/#/'
+    location.href = "/#/";
   }
 
   const InvitationCode = getParams(window.location.href, "InvitationCode");
@@ -41,11 +45,6 @@ export function Register(this: any) {
   };
 
   const loginClick = () => {
-    console.log("Input 1 value: ", email.current?.value);
-    console.log("Input 2 value: ", code.current?.value);
-    console.log("Input 3 value: ", password.current?.value);
-    console.log("Input 4 value: ", InvitationCodeRef.current?.value);
-
     let host = serverConfig.apiHost;
     fetch(host + "/api/auth/email-register", {
       method: "POST",
@@ -63,23 +62,46 @@ export function Register(this: any) {
       .then((data) => {
         if (data.code !== 200) {
           alert(data.message);
-        }
-        // 保存数据到localStorage
-        let access_token = data.data.authentication.access_token;
-        let expires_time = data.data.authentication.expires_time;
-        let token_type = data.data.authentication.token_type;
-        if (access_token) {
-          setLocalStorage(
-            "access_token",
-            token_type + " " + access_token,
-            expires_time,
-          );
-          loginSuccess();
+        } else {
+          showToast(data.message);
+          registerSuccess();
         }
       })
       .catch((error) => {});
   };
 
+  const getCode = () => {
+    console.log("验证码按钮被点击了111");
+    fetch(serverConfig.apiHost + "/api/auth/register-code", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email.current?.value,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code !== 200) {
+          alert(data.message);
+        } else {
+          showToast(data.message);
+          setShowContent(!showContent);
+          let timeLeft = 60; // 初始化时间
+          const timer = setInterval(() => {
+            timeLeft--; // 减少时间
+            setContent(timeLeft + "秒");
+            if (timeLeft === 0) {
+              // 停止计时器
+              clearInterval(timer);
+              setShowContent(showContent);
+            }
+          }, 1000); // 每1000ms更新一次
+        }
+      })
+      .catch((error) => {});
+  };
   return (
     <div style={{ position: "relative" }}>
       <div className="window-header">
@@ -114,12 +136,22 @@ export function Register(this: any) {
                 type="text"
                 placeholder="请输入验证码"
               />
-              <div
-                className={loginStyle["login-page-div-input-code-get"]}
-                onClick={() => getCode()}
-              >
-                获取验证码
-              </div>
+              {showContent && (
+                <div
+                  className={loginStyle["login-page-div-input-code-get"]}
+                  onClick={() => getCode()}
+                >
+                  获取验证码
+                </div>
+              )}
+
+              {/*<button onClick={getCode}>Toggle Content</button> /!* 点击按钮切换状态 *!/*/}
+
+              {!showContent && (
+                <div className={loginStyle["login-page-div-input-code-times"]}>
+                  {content}
+                </div>
+              )}
             </div>
             <div className={loginStyle["login-page-div"]}>
               <div className={loginStyle["login-page-div-text"]}>
@@ -162,9 +194,5 @@ export function Register(this: any) {
 
   function goLogin() {
     location.href = "/#/login";
-  }
-
-  function getCode() {
-    console.log("验证码按钮被点击了");
   }
 }

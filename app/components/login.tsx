@@ -19,7 +19,7 @@ export function Login(this: any) {
 
   let token = getLocalStorage("access_token");
   if (token) {
-    // location.href = '/#/'
+    location.href = "/#/";
   }
 
   const loginClick = () => {

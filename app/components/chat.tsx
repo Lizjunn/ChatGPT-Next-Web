@@ -20,6 +20,8 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import { checkLogin, getLocalStorage } from "../common/localStorage";
+const serverConfig = getServerSideConfig();
 
 import {
   Message,
@@ -63,6 +65,12 @@ import {
   DEFAULT_MASK_ID,
   useMaskStore,
 } from "../store/mask";
+import { getServerSideConfig } from "../config/server";
+import { exists } from "fs";
+import AddIcon from "../icons/add.svg";
+import ClearIcon from "../icons/clear.svg";
+import EditIcon from "../icons/edit.svg";
+import EyeIcon from "../icons/eye.svg";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -107,6 +115,64 @@ function exportMessages(messages: Message[], topic: string) {
 }
 
 export function SessionConfigModel(props: { onClose: () => void }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const maskStore = useMaskStore();
+  const navigate = useNavigate();
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Context.Edit}
+        onClose={() => props.onClose()}
+        actions={[
+          <IconButton
+            key="reset"
+            icon={<ResetIcon />}
+            bordered
+            text={Locale.Chat.Config.Reset}
+            onClick={() =>
+              confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
+            }
+          />,
+          // <IconButton
+          //   key="copy"
+          //   icon={<CopyIcon />}
+          //   bordered
+          //   text={Locale.Chat.Config.SaveAs}
+          //   onClick={() => {
+          //     navigate(Path.Masks);
+          //     setTimeout(() => {
+          //       maskStore.create(session.mask);
+          //     }, 500);
+          //   }}
+          // />,
+        ]}
+      >
+        <MaskConfig
+          mask={session.mask}
+          updateMask={(updater) => {
+            const mask = { ...session.mask };
+            updater(mask);
+            chatStore.updateCurrentSession((session) => (session.mask = mask));
+          }}
+          extraListItems={
+            session.mask.modelConfig.sendMemory ? (
+              <ListItem
+                title={`${Locale.Memory.Title} (${session.lastSummarizeIndex} of ${session.messages.length})`}
+                subTitle={session.memoryPrompt || Locale.Memory.EmptyContent}
+              ></ListItem>
+            ) : (
+              <></>
+            )
+          }
+        ></MaskConfig>
+      </Modal>
+    </div>
+  );
+}
+
+export function SessionConfigModel1(props: { onClose: () => void }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const maskStore = useMaskStore();
@@ -314,6 +380,88 @@ function useScrollToBottom() {
   };
 }
 
+function getSendNum() {
+  let token = getLocalStorage("access_token");
+  return fetch(serverConfig.apiHost + "/api/auth/get-send-num", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    body: JSON.stringify({}),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data.data.send_num);
+      if (data.code !== 200 && data.code !== 10001) {
+        alert(data.message);
+        return Promise.resolve(0);
+      } else if (data.code == 10001) {
+        localStorage.removeItem("access_token");
+        location.href = "/#/login";
+        return Promise.resolve(0);
+      } else {
+        return Promise.resolve(data.data.send_num);
+      }
+    })
+    .catch((error) => {
+      return Promise.resolve(0);
+    });
+}
+
+function UserPromptModal(props: { onClose?: () => void }) {
+  const promptStore = usePromptStore();
+  const userPrompts = promptStore.getUserPrompts();
+  const builtinPrompts = SearchService.builtinPrompts;
+  const allPrompts = userPrompts.concat(builtinPrompts);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchPrompts, setSearchPrompts] = useState<Prompt[]>([]);
+  const prompts = searchInput.length > 0 ? searchPrompts : allPrompts;
+
+  const [editingPromptId, setEditingPromptId] = useState<number>();
+
+  const [sendNum, setSendNum] = useState<number>(0);
+
+  useEffect(() => {
+    if (searchInput.length > 0) {
+      const searchResult = SearchService.search(searchInput);
+      setSearchPrompts(searchResult);
+    } else {
+      setSearchPrompts([]);
+    }
+  }, [searchInput]);
+
+  let res = getSendNum();
+  res
+    .then((num) => {
+      setSendNum(num);
+    })
+    .catch((error) => {
+      console.error(error); // 处理错误
+    });
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Settings.Prompt.Modal.Share}
+        onClose={() => props.onClose?.()}
+        actions={[]}
+      >
+        <div className={styles["user-prompt-modal"]}>
+          <div>可用次数：{sendNum}</div>
+        </div>
+      </Modal>
+
+      {/*{editingPromptId !== undefined && (*/}
+      {/*    <EditPromptModal*/}
+      {/*        id={editingPromptId!}*/}
+      {/*        onClose={() => setEditingPromptId(undefined)}*/}
+      {/*    />*/}
+      {/*)}*/}
+    </div>
+  );
+}
+
 export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
@@ -336,6 +484,7 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ControllerPool.hasPending();
   const stopAll = () => ControllerPool.stopAll();
+  const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
@@ -385,14 +534,23 @@ export function ChatActions(props: {
       {/*</div>*/}
 
       {/*预设角色面具*/}
-      {/*<div*/}
-      {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
-      {/*  onClick={() => {*/}
-      {/*    navigate(Path.Masks);*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <MaskIcon />*/}
-      {/*</div>*/}
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => {
+          navigate(Path.Masks);
+        }}
+      >
+        <MaskIcon />
+      </div>
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => setShowPromptModal(true)}
+      >
+        <ExportIcon />
+      </div>
+      {shouldShowPromptModal && (
+        <UserPromptModal onClose={() => setShowPromptModal(false)} />
+      )}
     </div>
   );
 }
@@ -417,7 +575,7 @@ export function Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
-
+  checkLogin();
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
@@ -479,16 +637,59 @@ export function Chat() {
     }
   };
 
+  function check() {
+    let token = getLocalStorage("access_token");
+    if (!token) {
+      location.href = "/#/login";
+      return Promise.resolve(false);
+    } else {
+      return fetch(serverConfig.apiHost + "/api/auth/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({}),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.code !== 200 && data.code !== 10001) {
+            alert(data.message);
+            return Promise.resolve(false);
+          } else if (data.code == 10001) {
+            localStorage.removeItem("access_token");
+            location.href = "/#/login";
+            return Promise.resolve(false);
+          } else {
+            return Promise.resolve(true);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          return Promise.resolve(false);
+        });
+    }
+  }
+
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
-    setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
-    setBeforeInput(userInput);
-    setUserInput("");
-    setPromptHints([]);
-    if (!isMobileScreen) inputRef.current?.focus();
-    setAutoScroll(true);
+    check()
+      .then((result) => {
+        if (result) {
+          setIsLoading(true);
+          chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+          setBeforeInput(userInput);
+          setUserInput("");
+          setPromptHints([]);
+          if (!isMobileScreen) inputRef.current?.focus();
+          setAutoScroll(true);
+        }
+        console.log(result); // 输出结果
+      })
+      .catch((error) => {
+        console.error(error); // 处理错误
+      });
   };
 
   // stop response
@@ -615,8 +816,8 @@ export function Chat() {
     }
   };
 
-  const location = useLocation();
-  const isChat = location.pathname === Path.Chat;
+  const locations = useLocation();
+  const isChat = locations.pathname === Path.Chat;
   const autoFocus = !isMobileScreen || isChat; // only focus in chat page
 
   return (

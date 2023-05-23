@@ -64,5 +64,5 @@ export const checkLogin = () => {
 export const logout = () => {
   localStorage.removeItem(token_key);
   showToast(Locale.Home.LogoutSuccess);
-  location.href = "/#/login";
+  location.href = "/";
 };
