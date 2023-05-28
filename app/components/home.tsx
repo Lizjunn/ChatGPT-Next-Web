@@ -53,7 +53,23 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
 const Login = dynamic(async () => (await import("./login")).Login, {
   loading: () => <Loading noLogo />,
 });
+
 const Register = dynamic(async () => (await import("./register")).Register, {
+  loading: () => <Loading noLogo />,
+});
+
+const UserCenter = dynamic(
+  async () => (await import("./user-center")).UserCenter,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
+const Recharge = dynamic(async () => (await import("./recharge")).Recharge, {
+  loading: () => <Loading noLogo />,
+});
+
+const Password = dynamic(async () => (await import("./password")).Register, {
   loading: () => <Loading noLogo />,
 });
 export function useSwitchTheme() {
@@ -126,6 +142,9 @@ function Screen() {
           <Route path={Path.Settings} element={<Settings />} />
           <Route path={Path.Login} element={<Login />} />
           <Route path={Path.Register} element={<Register />} />
+          <Route path={Path.UserCenter} element={<UserCenter />} />
+          <Route path={Path.Recharge} element={<Recharge />} />
+          <Route path={Path.Password} element={<Password />} />
         </Routes>
       </div>
     </div>

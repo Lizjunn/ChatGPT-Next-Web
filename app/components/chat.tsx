@@ -14,6 +14,7 @@ import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
+import RechargeIcon from "../icons/recharge.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -409,59 +410,6 @@ function getSendNum() {
     });
 }
 
-function UserPromptModal(props: { onClose?: () => void }) {
-  const promptStore = usePromptStore();
-  const userPrompts = promptStore.getUserPrompts();
-  const builtinPrompts = SearchService.builtinPrompts;
-  const allPrompts = userPrompts.concat(builtinPrompts);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchPrompts, setSearchPrompts] = useState<Prompt[]>([]);
-  const prompts = searchInput.length > 0 ? searchPrompts : allPrompts;
-
-  const [editingPromptId, setEditingPromptId] = useState<number>();
-
-  const [sendNum, setSendNum] = useState<number>(0);
-
-  useEffect(() => {
-    if (searchInput.length > 0) {
-      const searchResult = SearchService.search(searchInput);
-      setSearchPrompts(searchResult);
-    } else {
-      setSearchPrompts([]);
-    }
-  }, [searchInput]);
-
-  let res = getSendNum();
-  res
-    .then((num) => {
-      setSendNum(num);
-    })
-    .catch((error) => {
-      console.error(error); // 处理错误
-    });
-
-  return (
-    <div className="modal-mask">
-      <Modal
-        title={Locale.Settings.Prompt.Modal.Share}
-        onClose={() => props.onClose?.()}
-        actions={[]}
-      >
-        <div className={styles["user-prompt-modal"]}>
-          <div>可用次数：{sendNum}</div>
-        </div>
-      </Modal>
-
-      {/*{editingPromptId !== undefined && (*/}
-      {/*    <EditPromptModal*/}
-      {/*        id={editingPromptId!}*/}
-      {/*        onClose={() => setEditingPromptId(undefined)}*/}
-      {/*    />*/}
-      {/*)}*/}
-    </div>
-  );
-}
-
 export function ChatActions(props: {
   showPromptModal: () => void;
   scrollToBottom: () => void;
@@ -484,7 +432,6 @@ export function ChatActions(props: {
   // stop all responses
   const couldStop = ControllerPool.hasPending();
   const stopAll = () => ControllerPool.stopAll();
-  const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
   return (
     <div className={chatStyle["chat-input-actions"]}>
@@ -542,15 +489,15 @@ export function ChatActions(props: {
       >
         <MaskIcon />
       </div>
+
       <div
         className={`${chatStyle["chat-input-action"]} clickable`}
-        onClick={() => setShowPromptModal(true)}
+        onClick={() => {
+          navigate(Path.Recharge);
+        }}
       >
-        <ExportIcon />
+        <RechargeIcon />
       </div>
-      {shouldShowPromptModal && (
-        <UserPromptModal onClose={() => setShowPromptModal(false)} />
-      )}
     </div>
   );
 }

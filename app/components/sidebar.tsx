@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import styles from "./home.module.scss";
 
@@ -10,11 +10,11 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import UserCenterIcon from "../icons/user-center.svg";
 
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
-import { getLocalStorage, logout } from "../common/localStorage";
 
 import {
   MAX_SIDEBAR_WIDTH,
@@ -28,15 +28,32 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
-import ReturnIcon from "../icons/return.svg";
-import { func } from "prop-types";
-import chatStyle from "./chat.module.scss";
-import { getServerSideConfig } from "../config/server";
-const serverConfig = getServerSideConfig();
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
+
+function useHotKey() {
+  const chatStore = useChatStore();
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.altKey || e.ctrlKey) {
+        const n = chatStore.sessions.length;
+        const limit = (x: number) => (x + n) % n;
+        const i = chatStore.currentSessionIndex;
+        if (e.key === "ArrowUp") {
+          chatStore.selectSession(limit(i - 1));
+        } else if (e.key === "ArrowDown") {
+          chatStore.selectSession(limit(i + 1));
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
+}
 
 function useDragSideBar() {
   const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
@@ -86,48 +103,16 @@ function useDragSideBar() {
   };
 }
 
-function getIsShowLogout() {
-  let token = getLocalStorage("access_token");
-  return !!token;
-}
-
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
 
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
-
   const config = useAppConfig();
 
-  const [num, setNum] = useState(0); // 定义内容状态
-  let token = getLocalStorage("access_token");
-  if (!token) {
-    location.href = "/#/login";
-  } else {
-    // fetch(serverConfig.apiHost + "/api/auth/get-send-num", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Authorization": token
-    //   },
-    //   body: JSON.stringify({}),
-    // })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       console.log(data.data.send_num)
-    //       if (data.code !== 200 && data.code !== 10001) {
-    //         alert(data.message);
-    //       } else if (data.code == 10001) {
-    //         localStorage.removeItem('access_token');
-    //         location.href = '/#/login'
-    //       } else {
-    //         setNum(data.data.send_num)
-    //       }
-    //     })
-    //     .catch((error) => {
-    //     });
-  }
+  useHotKey();
+
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${
@@ -135,9 +120,8 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT AI 助手</div>
-        <div className={styles["sidebar-sub-title"]}>构建您自己的 AI 助手</div>
-        {/*<div className={styles["sidebar-sub-title"]}>可用次数：{num}</div>*/}
+        <div className={styles["sidebar-title"]}>ChatGPT AI助手</div>
+        <div className={styles["sidebar-sub-title"]}>构建您自己的AI助手</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
@@ -145,54 +129,44 @@ export function SideBar(props: { className?: string }) {
 
       {/*<div className={styles["sidebar-header-bar"]}>*/}
       {/*  <IconButton*/}
-      {/*    icon={<MaskIcon />}*/}
-      {/*    text={shouldNarrow ? undefined : Locale.Mask.Name}*/}
-      {/*    className={styles["sidebar-bar-button"]}*/}
-      {/*    onClick={() => navigate(Path.NewChat, { state: { fromHome: true } })}*/}
-      {/*    shadow*/}
+      {/*      icon={<MaskIcon />}*/}
+      {/*      text={shouldNarrow ? undefined : Locale.Mask.Name}*/}
+      {/*      className={styles["sidebar-bar-button"]}*/}
+      {/*      onClick={() => navigate(Path.NewChat, { state: { fromHome: true } })}*/}
+      {/*      shadow*/}
       {/*  />*/}
       {/*  <IconButton*/}
-      {/*    icon={<PluginIcon />}*/}
-      {/*    text={shouldNarrow ? undefined : Locale.Plugin.Name}*/}
-      {/*    className={styles["sidebar-bar-button"]}*/}
-      {/*    onClick={() => showToast(Locale.WIP)}*/}
-      {/*    shadow*/}
+      {/*      icon={<PluginIcon />}*/}
+      {/*      text={shouldNarrow ? undefined : Locale.Plugin.Name}*/}
+      {/*      className={styles["sidebar-bar-button"]}*/}
+      {/*      onClick={() => showToast(Locale.WIP)}*/}
+      {/*      shadow*/}
       {/*  />*/}
       {/*</div>*/}
 
       <div
         className={styles["sidebar-body"]}
-        // onClick={(e) => {
-        //   if (e.target === e.currentTarget) {
-        //     navigate(Path.Home);
-        //   }
-        // }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            navigate(Path.Home);
+          }
+        }}
       >
         <ChatList narrow={shouldNarrow} />
       </div>
 
       <div className={styles["sidebar-tail"]}>
         <div className={styles["sidebar-actions"]}>
-          {/*<div className={styles["sidebar-action"] + " " + styles.mobile}>*/}
-          {/*  <IconButton*/}
-          {/*    icon={<CloseIcon />}*/}
-          {/*    onClick={() => {*/}
-          {/*      if (confirm(Locale.Home.DeleteChat)) {*/}
-          {/*        chatStore.deleteSession(chatStore.currentSessionIndex);*/}
-          {/*      }*/}
-          {/*    }}*/}
-          {/*  />*/}
-          {/*</div>*/}
-          {getIsShowLogout() && (
-            <div className={styles["sidebar-action"]}>
-              <IconButton
-                icon={<ReturnIcon />}
-                text={shouldNarrow ? undefined : Locale.Home.Logout}
-                onClick={logout}
-                shadow
-              />
-            </div>
-          )}
+          <div className={styles["sidebar-action"] + " " + styles.mobile}>
+            <IconButton
+              icon={<CloseIcon />}
+              onClick={() => {
+                if (confirm(Locale.Home.DeleteChat)) {
+                  chatStore.deleteSession(chatStore.currentSessionIndex);
+                }
+              }}
+            />
+          </div>
           <div className={styles["sidebar-action"]}>
             <Link to={Path.Settings}>
               <IconButton icon={<SettingsIcon />} shadow />
@@ -218,6 +192,15 @@ export function SideBar(props: { className?: string }) {
             }}
             shadow
           />
+        </div>
+        <div className={styles["sidebar-action"]}>
+          <Link to={Path.UserCenter} style={{ textDecoration: "none" }}>
+            <IconButton
+              icon={<UserCenterIcon />}
+              shadow
+              text={shouldNarrow ? undefined : Locale.Home.UserCenter}
+            />
+          </Link>
         </div>
       </div>
 

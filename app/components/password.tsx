@@ -48,7 +48,7 @@ export function Register(this: any) {
 
   const loginClick = () => {
     let host = serverConfig.apiHost;
-    fetch(host + "/api/auth/email-register", {
+    fetch(host + "/api/auth/forget-password", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export function Register(this: any) {
         password: password.current?.value,
         code: code.current?.value,
         invitationCode: InvitationCodeRef.current?.value,
-        type: "register",
+        type: "forget-password",
       }),
     })
       .then((response) => response.json())
@@ -82,7 +82,7 @@ export function Register(this: any) {
       },
       body: JSON.stringify({
         email: email.current?.value,
-        type: "register",
+        type: "forget-password",
       }),
     })
       .then((response) => response.json())
@@ -110,9 +110,7 @@ export function Register(this: any) {
     <div style={{ position: "relative" }}>
       <div className="window-header">
         <div className="window-header-title">
-          <div className="window-header-main-title">
-            {Locale.Register.Title}
-          </div>
+          <div className="window-header-main-title">{"忘记密码"}</div>
         </div>
       </div>
       <div className={loginStyle["login-page"]}>
@@ -158,33 +156,21 @@ export function Register(this: any) {
               )}
             </div>
             <div className={loginStyle["login-page-div"]}>
-              <div className={loginStyle["login-page-div-text"]}>
-                密&nbsp;&nbsp;&nbsp;&nbsp;码:
-              </div>
+              <div className={loginStyle["login-page-div-text"]}>新密码:</div>
               <input
                 ref={password}
                 className={loginStyle["login-page-div-input-email"]}
                 type="password"
-                placeholder="请输入密码"
+                placeholder="请输入新密码"
               />
             </div>
-            <div className={loginStyle["login-page-div"]}>
-              <div className={loginStyle["login-page-div-text"]}>邀请码:</div>
-              <input
-                ref={InvitationCodeRef}
-                className={loginStyle["login-page-div-input-email"]}
-                type="text"
-                placeholder="请输入邀请码(非必填)"
-                value={inputValue}
-                onChange={handleInputChange}
-              />
-            </div>
+
             <div
               className={loginStyle["login-page-div-center"]}
               style={{ marginTop: "30px" }}
             >
               <button className={loginStyle["commit-btn"]} onClick={loginClick}>
-                注册
+                重置密码
               </button>
             </div>
             <p style={{ color: "#585e6d", fontSize: "14px" }} onClick={goLogin}>

@@ -43,7 +43,7 @@ export const getLocalStorage = (key: string) => {
  * 检查是否登录
  */
 export const checkLogin = () => {
-  const whiteList = ["register"];
+  const whiteList = ["register", "password"];
 
   const url1 = window.location.href;
   const regex = /#\/([^?/]+)/; // 匹配斜杠后面的非斜杠字符
@@ -52,7 +52,7 @@ export const checkLogin = () => {
   if (match1) {
     pageName = match1[1];
   }
-
+  console.log("pageName：", pageName);
   if (!whiteList.includes(pageName)) {
     let token = getLocalStorage("access_token");
     if (!token) {

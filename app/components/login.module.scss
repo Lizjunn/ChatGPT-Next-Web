@@ -116,7 +116,7 @@
   margin-top: 10px;
 }
 .commit-btn{
-  width: 40%;
+  width: 100%;
   height: 36px;
   border: 1px solid var(--primary);
   background-color: rgb(29, 147, 171);
@@ -126,4 +126,19 @@
 }
 .login-page-toReg{
   margin-top: 20px;
+}
+
+.bottom-text{
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.forget-password-register{
+  color: #585e6d;
+  font-size: 14px;
+}
+.forget-password-register:hover{
+  cursor: pointer;
 }

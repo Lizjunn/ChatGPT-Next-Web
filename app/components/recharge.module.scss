@@ -1,0 +1,31 @@
+.img-page{
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 auto;
+  width: 650px;
+}
+
+.title{
+  font-weight: bold;
+  font-size: 18px;
+}
+.sub-title{
+  font-size: 15px;
+  color: #f11738;
+}
+.sub-title-p{
+  font-size: 15px;
+  color: #f11738;
+}
+.sub-title:hover{
+  cursor: pointer;
+}
+.img-box{
+  background: skyblue;
+  height: auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}

@@ -11,10 +11,13 @@ export enum Path {
   Home = "/",
   Chat = "/chat",
   Settings = "/settings",
+  UserCenter = "/user-center",
   NewChat = "/new-chat",
   Masks = "/masks",
+  Recharge = "/recharge",
   Login = "/login",
   Register = "/register",
+  Password = "/password",
 }
 
 export enum SlotID {
