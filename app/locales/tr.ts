@@ -1,7 +1,168 @@
 import { SubmitKey } from "../store/config";
 import type { LocaleType } from "./index";
 
-const tr: LocaleType = {
+const tr: {
+  Context: { Add: string; Toast: (x: any) => string; Edit: string };
+  Memory: {
+    ResetConfirm: string;
+    Copy: string;
+    Title: string;
+    Reset: string;
+    EmptyContent: string;
+    Send: string;
+  };
+  Mask: {
+    Item: {
+      Delete: string;
+      Chat: string;
+      Edit: string;
+      Info: (count: number) => string;
+      View: string;
+      DeleteConfirm: string;
+    };
+    Config: { Avatar: string; Name: string };
+    Page: {
+      Create: string;
+      Search: string;
+      Title: string;
+      SubTitle: (count: number) => string;
+    };
+    EditModal: {
+      Title: (readonly: boolean) => string;
+      Download: string;
+      Clone: string;
+    };
+    Name: string;
+  };
+  Error: { Unauthorized: string };
+  ChatItem: { ChatItemCount: (count: number) => string };
+  Store: {
+    DefaultTopic: string;
+    BotHello: string;
+    Error: string;
+    Prompt: {
+      History: (content: string) => string;
+      Topic: string;
+      Summarize: string;
+    };
+  };
+  NewChat: {
+    More: string;
+    Return: string;
+    Skip: string;
+    Title: string;
+    NotShow: string;
+    ConfirmNoShow: string;
+    SubTitle: string;
+  };
+  UI: {
+    Cancel: string;
+    Create: string;
+    Confirm: string;
+    Close: string;
+    Edit: string;
+  };
+  Copy: { Failed: string; Success: string };
+  Chat: {
+    Input: (submitKey: string) => string;
+    Typing: string;
+    Actions: {
+      Delete: string;
+      ChatList: string;
+      Copy: string;
+      Stop: string;
+      Export: string;
+      Retry: string;
+      CompressedHistory: string;
+    };
+    Config: { Reset: string; SaveAs: string };
+    SubTitle: (count: number) => string;
+    Rename: string;
+    Send: string;
+  };
+  Export: {
+    MessageFromYou: string;
+    MessageFromChatGPT: string;
+    Copy: string;
+    Title: string;
+    Download: string;
+  };
+  Home: {
+    DeleteToast: string;
+    NewChat: string;
+    DeleteChat: string;
+    UserCenter: string;
+    Logout: string;
+    Revert: string;
+    LogoutFail: string;
+    LogoutSuccess: string;
+  };
+  Settings: {
+    Usage: {
+      IsChecking: string;
+      Check: string;
+      Title: string;
+      SubTitle(used: any, total: any): string;
+      NoAccess: string;
+    };
+    Temperature: { Title: string; SubTitle: string };
+    Actions: {
+      ClearAll: string;
+      ConfirmClearAll: string;
+      ResetAll: string;
+      Close: string;
+      ConfirmResetAll: string;
+    };
+    MaxTokens: { Title: string; SubTitle: string };
+    Mask: { Title: string; SubTitle: string };
+    Title: string;
+    AccessCode: { Placeholder: string; Title: string; SubTitle: string };
+    Lang: {
+      All: string;
+      Options: {
+        de: string;
+        tw: string;
+        jp: string;
+        en: string;
+        cn: string;
+        it: string;
+        es: string;
+        tr: string;
+      };
+      Name: string;
+    };
+    Token: { Placeholder: string; Title: string; SubTitle: string };
+    Update: {
+      IsChecking: string;
+      Version: (x: string) => string;
+      CheckUpdate: string;
+      FoundUpdate: (x: string) => string;
+      GoToUpdate: string;
+      IsLatest: string;
+    };
+    SendKey: string;
+    Avatar: string;
+    CompressThreshold: { Title: string; SubTitle: string };
+    HistoryCount: { Title: string; SubTitle: string };
+    SendPreviewBubble: { Title: string; SubTitle: string };
+    FontSize: { Title: string; SubTitle: string };
+    Model: string;
+    Theme: string;
+    Prompt: {
+      List: string;
+      Edit: string;
+      EditModal: { Title: string };
+      Modal: { Add: string; Search: string; Title: string; Share: string };
+      Disable: { Title: string; SubTitle: string };
+      ListCount: (builtin: number, custom: number) => string;
+    };
+    TightBorder: string;
+    SubTitle: string;
+    PresencePenlty: { Title: string; SubTitle: string };
+  };
+  WIP: string;
+  Plugin: { Name: string };
+} = {
   WIP: "Çalışma devam ediyor...",
   Error: {
     Unauthorized:
@@ -54,6 +215,10 @@ const tr: LocaleType = {
   },
   Home: {
     NewChat: "Yeni Sohbet",
+    Logout: "logout",
+    UserCenter: "userCenter",
+    LogoutSuccess: "logoutSuccess",
+    LogoutFail: "logoutFail",
     DeleteChat: "Seçili sohbeti silmeyi onaylıyor musunuz?",
     DeleteToast: "Sohbet Silindi",
     Revert: "Geri Al",
@@ -119,6 +284,7 @@ const tr: LocaleType = {
         Title: "Prompt List",
         Add: "Add One",
         Search: "Search Prompts",
+        Share: "Share",
       },
       EditModal: {
         Title: "Edit Prompt",
