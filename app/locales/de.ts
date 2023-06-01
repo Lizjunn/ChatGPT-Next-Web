@@ -54,6 +54,10 @@ const de: LocaleType = {
   },
   Home: {
     NewChat: "Neuer Chat",
+    Logout: "logout",
+    UserCenter: "UserCenter",
+    LogoutSuccess: "LogoutSuccess",
+    LogoutFail: "LogoutFail",
     DeleteChat: "Bestätigen Sie, um das ausgewählte Gespräch zu löschen?",
     DeleteToast: "Chat gelöscht",
     Revert: "Zurücksetzen",
@@ -120,6 +124,7 @@ const de: LocaleType = {
         Title: "Prompt List",
         Add: "Add One",
         Search: "Search Prompts",
+        Share: "Share",
       },
       EditModal: {
         Title: "Edit Prompt",
