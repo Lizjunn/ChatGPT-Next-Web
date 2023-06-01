@@ -55,9 +55,9 @@ const de: LocaleType = {
   Home: {
     NewChat: "Neuer Chat",
     Logout: "logout",
-    UserCenter: "UserCenter",
-    LogoutSuccess: "LogoutSuccess",
-    LogoutFail: "LogoutFail",
+    UserCenter: "userCenter",
+    LogoutSuccess: "logoutSuccess",
+    LogoutFail: "logoutFail",
     DeleteChat: "Bestätigen Sie, um das ausgewählte Gespräch zu löschen?",
     DeleteToast: "Chat gelöscht",
     Revert: "Zurücksetzen",
