@@ -14,6 +14,8 @@ import { showToast } from "../components/ui-lib";
 import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { StoreKey } from "../constant";
+import { getServerSideConfig } from "../config/server";
+import { getLocalStorage } from "../common/localStorage";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -281,12 +283,15 @@ export const useChatStore = create<ChatStore>()(
               set(() => ({}));
             }
           },
-          onError(error, statusCode) {
+          onError(error, statusCode, isPrint = false) {
             const isAborted = error.message.includes("aborted");
+            console.log(isAborted);
             if (statusCode === 401) {
               botMessage.content = Locale.Error.Unauthorized;
-            } else if (!isAborted) {
+            } else if (!isAborted && !isPrint) {
               botMessage.content += "\n\n" + Locale.Store.Error;
+            } else if (isPrint) {
+              botMessage.content += "\n\n" + error.message;
             }
             botMessage.streaming = false;
             userMessage.isError = !isAborted;
@@ -425,6 +430,37 @@ export const useChatStore = create<ChatStore>()(
         toBeSummarizedMsgs.unshift(get().getMemoryPrompt());
 
         const lastSummarizeIndex = session.messages.length;
+        let msgLen = toBeSummarizedMsgs.length;
+        console.log(toBeSummarizedMsgs[msgLen - 2]);
+        console.log(toBeSummarizedMsgs[msgLen - 1]);
+        const serverConfig = getServerSideConfig();
+        let host = serverConfig.apiHost;
+        let token = getLocalStorage("access_token");
+        fetch(host + "/api/auth/chat-log", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify({
+            user_msg: toBeSummarizedMsgs[msgLen - 2],
+            assistant_msg: toBeSummarizedMsgs[msgLen - 1],
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.code !== 200 && data.code !== 10001) {
+              alert(data.message);
+              return false;
+            } else if (data.code == 10001) {
+              localStorage.removeItem("access_token");
+              location.href = "/#/login";
+              return false;
+            } else {
+              return true;
+            }
+          })
+          .catch((error) => {});
 
         console.log(
           "[Chat History] ",

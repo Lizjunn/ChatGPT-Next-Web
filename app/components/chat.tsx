@@ -522,7 +522,11 @@ export function Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
-  checkLogin();
+  let token = getLocalStorage("access_token");
+  if (!token) {
+    location.href = "/#/login";
+  }
+  // checkLogin();
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
     setHitBottom(isTouchBottom);
@@ -621,22 +625,31 @@ export function Chat() {
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
-    check()
-      .then((result) => {
-        if (result) {
-          setIsLoading(true);
-          chatStore.onUserInput(userInput).then(() => setIsLoading(false));
-          setBeforeInput(userInput);
-          setUserInput("");
-          setPromptHints([]);
-          if (!isMobileScreen) inputRef.current?.focus();
-          setAutoScroll(true);
-        }
-        console.log(result); // 输出结果
-      })
-      .catch((error) => {
-        console.error(error); // 处理错误
-      });
+
+    setIsLoading(true);
+    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    setBeforeInput(userInput);
+    setUserInput("");
+    setPromptHints([]);
+    if (!isMobileScreen) inputRef.current?.focus();
+    setAutoScroll(true);
+
+    // check()
+    //   .then((result) => {
+    //     if (result) {
+    //       setIsLoading(true);
+    //       chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    //       setBeforeInput(userInput);
+    //       setUserInput("");
+    //       setPromptHints([]);
+    //       if (!isMobileScreen) inputRef.current?.focus();
+    //       setAutoScroll(true);
+    //     }
+    //     console.log(result); // 输出结果
+    //   })
+    //   .catch((error) => {
+    //     console.error(error); // 处理错误
+    //   });
   };
 
   // stop response

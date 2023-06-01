@@ -8,6 +8,9 @@ import {
   useChatStore,
 } from "./store";
 import { showToast } from "./components/ui-lib";
+import { getLocalStorage } from "./common/localStorage";
+import { getServerSideConfig } from "./config/server";
+const serverConfig = getServerSideConfig();
 
 const TIME_OUT_MS = 60000;
 
@@ -144,16 +147,50 @@ export async function requestUsage() {
   };
 }
 
+const check = () => {
+  let token = getLocalStorage("access_token");
+  return fetch(serverConfig.apiHost + "/api/auth/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+    body: JSON.stringify({}),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.code !== 200 && data.code !== 10001) {
+        return Promise.resolve(data.message);
+      } else if (data.code == 10001) {
+        localStorage.removeItem("access_token");
+        location.href = "/#/login";
+        return Promise.resolve("ok");
+      } else {
+        return Promise.resolve("ok");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return Promise.resolve("ok");
+    });
+};
+
 export async function requestChatStream(
   messages: Message[],
   options?: {
     modelConfig?: ModelConfig;
     overrideModel?: ModelType;
     onMessage: (message: string, done: boolean) => void;
-    onError: (error: Error, statusCode?: number) => void;
+    onError: (error: Error, statusCode?: number, isPrint?: boolean) => void;
     onController?: (controller: AbortController) => void;
   },
 ) {
+  const result = await check();
+  if (result !== "ok") {
+    options?.onError(new Error(result), 200, true);
+    return;
+  }
+
   const req = makeRequestParam(messages, {
     stream: true,
     overrideModel: options?.overrideModel,

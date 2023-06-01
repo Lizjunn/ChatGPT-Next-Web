@@ -187,7 +187,7 @@ export function UserCenter() {
           </ListItem>
 
           <ListItem title={Locale.UserCenter.SendNum} subTitle={num}>
-            <div className={styles.avatar}>
+            <div onClick={() => navigate(Path.Recharge)}>
               <div className="link">前往充值</div>
             </div>
           </ListItem>
