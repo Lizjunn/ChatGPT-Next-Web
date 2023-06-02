@@ -40,6 +40,6 @@ export const getServerSideConfig = () => {
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
-    apiHost: "http://gpt-api.logues.cn",
+    apiHost: "https://gpt-api.logues.cn",
   };
 };
