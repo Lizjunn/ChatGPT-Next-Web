@@ -113,14 +113,14 @@ export function Recharge() {
               <div>
                 <img
                   style={{ width: "300px" }}
-                  src="http://106.55.158.200/img/wx_user.jpg"
+                  src="https://gpt-api.logues.cn/img/wx_user.jpg"
                   alt=""
                 />
               </div>
               <div>
                 <img
                   style={{ width: "300px" }}
-                  src="http://106.55.158.200/img/wx_pay.jpg"
+                  src="https://gpt-api.logues.cn/img/wx_pay.jpg"
                   alt=""
                 />
               </div>
