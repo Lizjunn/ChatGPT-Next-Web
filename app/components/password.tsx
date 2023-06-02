@@ -37,15 +37,6 @@ export function Register(this: any) {
     location.href = "/#/";
   }
 
-  const InvitationCode = getParams(window.location.href, "InvitationCode");
-  useEffect(() => {
-    setInputValue(InvitationCode);
-  }, [InvitationCode]);
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
-
   const loginClick = () => {
     let host = serverConfig.apiHost;
     fetch(host + "/api/auth/forget-password", {

@@ -503,6 +503,11 @@ export function ChatActions(props: {
 }
 
 export function Chat() {
+  let token = getLocalStorage("access_token");
+  if (!token) {
+    location.href = "/#/login";
+  }
+
   type RenderMessage = Message & { preview?: boolean };
 
   const chatStore = useChatStore();
@@ -522,10 +527,7 @@ export function Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
-  let token = getLocalStorage("access_token");
-  if (!token) {
-    location.href = "/#/login";
-  }
+
   // checkLogin();
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;

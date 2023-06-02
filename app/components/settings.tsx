@@ -31,6 +31,7 @@ import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
+import { getLocalStorage } from "../common/localStorage";
 
 function EditPromptModal(props: { id: number; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -197,6 +198,11 @@ function formatVersionDate(t: string) {
 }
 
 export function Settings() {
+  let token = getLocalStorage("access_token");
+  if (!token) {
+    location.href = "/#/login";
+  }
+
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();

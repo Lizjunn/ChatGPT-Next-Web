@@ -13,6 +13,7 @@ import { Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
 import { MaskAvatar } from "./mask";
+import { getLocalStorage } from "../common/localStorage";
 
 function getIntersectionArea(aRect: DOMRect, bRect: DOMRect) {
   const xmin = Math.max(aRect.x, bRect.x);
@@ -95,6 +96,11 @@ function useMaskGroup(masks: Mask[]) {
 }
 
 export function NewChat() {
+  let token = getLocalStorage("access_token");
+  if (!token) {
+    location.href = "/#/login";
+  }
+
   const chatStore = useChatStore();
   const maskStore = useMaskStore();
 

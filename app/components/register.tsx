@@ -6,7 +6,7 @@ import Locale from "../locales";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import { getServerSideConfig } from "../config/server";
 import { setLocalStorage, getLocalStorage } from "../common/localStorage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { showToast } from "./ui-lib";
 
 const serverConfig = getServerSideConfig();
@@ -19,6 +19,11 @@ function getParams(url: string, params: string) {
 }
 
 export function Register(this: any) {
+  let token = getLocalStorage("access_token");
+  if (token) {
+    location.href = "/#/";
+  }
+
   const email = React.createRef<HTMLInputElement>();
   const code = React.createRef<HTMLInputElement>();
   const password = React.createRef<HTMLInputElement>();
@@ -32,12 +37,8 @@ export function Register(this: any) {
     navigate("/#/login");
   };
 
-  let token = getLocalStorage("access_token");
-  if (token) {
-    location.href = "/#/";
-  }
-
-  const InvitationCode = getParams(window.location.href, "InvitationCode");
+  const uLocation = useLocation();
+  const InvitationCode = getParams(uLocation.search, "InvitationCode");
   useEffect(() => {
     setInputValue(InvitationCode);
   }, [InvitationCode]);

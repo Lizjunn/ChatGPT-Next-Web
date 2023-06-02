@@ -43,22 +43,29 @@ export const getLocalStorage = (key: string) => {
  * 检查是否登录
  */
 export const checkLogin = () => {
-  const whiteList = ["register", "password"];
-
-  const url1 = window.location.href;
-  const regex = /#\/([^?/]+)/; // 匹配斜杠后面的非斜杠字符
-  const match1 = url1.match(regex);
-  let pageName = "";
-  if (match1) {
-    pageName = match1[1];
-  }
-  console.log("pageName：", pageName);
-  if (!whiteList.includes(pageName)) {
-    let token = getLocalStorage("access_token");
-    if (!token) {
-      location.href = "/#/login";
-    }
-  }
+  // const whiteList = ["register", "password"];
+  //
+  // const uLocation = useLocation();
+  //
+  // console.log("uLocation:" + uLocation)
+  //
+  // //const url1 = window.location.href;
+  // const url1 = document.URL;
+  // const regex = /#\/([^?/]+)/; // 匹配斜杠后面的非斜杠字符
+  // const match1 = url1.match(regex);
+  // console.log("match1:" + match1)
+  //
+  // let pageName = "";
+  // if (match1) {
+  //   pageName = match1[1];
+  // }
+  // console.log("pageName：", pageName);
+  // if (!whiteList.includes(pageName)) {
+  //   let token = getLocalStorage("access_token");
+  //   if (!token) {
+  //     location.href = "/#/login";
+  //   }
+  // }
 };
 
 export const logout = () => {

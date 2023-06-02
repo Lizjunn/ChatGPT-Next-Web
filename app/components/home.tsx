@@ -101,7 +101,7 @@ export function useSwitchTheme() {
       metaDescriptionLight?.setAttribute("content", themeColor);
     }
   }, [config.theme]);
-  checkLogin();
+  //checkLogin();
 }
 
 const useHasHydrated = () => {
