@@ -136,18 +136,18 @@ export function SessionConfigModel(props: { onClose: () => void }) {
               confirm(Locale.Memory.ResetConfirm) && chatStore.resetSession()
             }
           />,
-          // <IconButton
-          //   key="copy"
-          //   icon={<CopyIcon />}
-          //   bordered
-          //   text={Locale.Chat.Config.SaveAs}
-          //   onClick={() => {
-          //     navigate(Path.Masks);
-          //     setTimeout(() => {
-          //       maskStore.create(session.mask);
-          //     }, 500);
-          //   }}
-          // />,
+          <IconButton
+            key="copy"
+            icon={<CopyIcon />}
+            bordered
+            text={Locale.Chat.Config.SaveAs}
+            onClick={() => {
+              navigate(Path.Masks);
+              setTimeout(() => {
+                maskStore.create(session.mask);
+              }, 500);
+            }}
+          />,
         ]}
       >
         <MaskConfig
@@ -473,12 +473,12 @@ export function ChatActions(props: {
         ) : null}
       </div>
 
-      {/*<div*/}
-      {/*  className={`${chatStyle["chat-input-action"]} clickable`}*/}
-      {/*  onClick={props.showPromptHints}*/}
-      {/*>*/}
-      {/*  <PromptIcon />*/}
-      {/*</div>*/}
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={props.showPromptHints}
+      >
+        <PromptIcon />
+      </div>
 
       {/*预设角色面具*/}
       <div

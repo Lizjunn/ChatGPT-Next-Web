@@ -126,62 +126,62 @@ export function ContextPrompts(props: {
 
   return (
     <>
-      {/*<div className={chatStyle["context-prompt"]} style={{ marginBottom: 20 }}>*/}
-      {/*  {context.map((c, i) => (*/}
-      {/*    <div className={chatStyle["context-prompt-row"]} key={i}>*/}
-      {/*      <select*/}
-      {/*        value={c.role}*/}
-      {/*        className={chatStyle["context-role"]}*/}
-      {/*        onChange={(e) =>*/}
-      {/*          updateContextPrompt(i, {*/}
-      {/*            ...c,*/}
-      {/*            role: e.target.value as any,*/}
-      {/*          })*/}
-      {/*        }*/}
-      {/*      >*/}
-      {/*        {ROLES.map((r) => (*/}
-      {/*          <option key={r} value={r}>*/}
-      {/*            {r}*/}
-      {/*          </option>*/}
-      {/*        ))}*/}
-      {/*      </select>*/}
-      {/*      <Input*/}
-      {/*        value={c.content}*/}
-      {/*        type="text"*/}
-      {/*        className={chatStyle["context-content"]}*/}
-      {/*        rows={1}*/}
-      {/*        onInput={(e) =>*/}
-      {/*          updateContextPrompt(i, {*/}
-      {/*            ...c,*/}
-      {/*            content: e.currentTarget.value as any,*/}
-      {/*          })*/}
-      {/*        }*/}
-      {/*      />*/}
-      {/*      <IconButton*/}
-      {/*        icon={<DeleteIcon />}*/}
-      {/*        className={chatStyle["context-delete-button"]}*/}
-      {/*        onClick={() => removeContextPrompt(i)}*/}
-      {/*        bordered*/}
-      {/*      />*/}
-      {/*    </div>*/}
-      {/*  ))}*/}
+      <div className={chatStyle["context-prompt"]} style={{ marginBottom: 20 }}>
+        {context.map((c, i) => (
+          <div className={chatStyle["context-prompt-row"]} key={i}>
+            <select
+              value={c.role}
+              className={chatStyle["context-role"]}
+              onChange={(e) =>
+                updateContextPrompt(i, {
+                  ...c,
+                  role: e.target.value as any,
+                })
+              }
+            >
+              {ROLES.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+            <Input
+              value={c.content}
+              type="text"
+              className={chatStyle["context-content"]}
+              rows={1}
+              onInput={(e) =>
+                updateContextPrompt(i, {
+                  ...c,
+                  content: e.currentTarget.value as any,
+                })
+              }
+            />
+            <IconButton
+              icon={<DeleteIcon />}
+              className={chatStyle["context-delete-button"]}
+              onClick={() => removeContextPrompt(i)}
+              bordered
+            />
+          </div>
+        ))}
 
-      {/*  <div className={chatStyle["context-prompt-row"]}>*/}
-      {/*    <IconButton*/}
-      {/*      icon={<AddIcon />}*/}
-      {/*      text={Locale.Context.Add}*/}
-      {/*      bordered*/}
-      {/*      className={chatStyle["context-prompt-button"]}*/}
-      {/*      onClick={() =>*/}
-      {/*        addContextPrompt({*/}
-      {/*          role: "system",*/}
-      {/*          content: "",*/}
-      {/*          date: "",*/}
-      {/*        })*/}
-      {/*      }*/}
-      {/*    />*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+        <div className={chatStyle["context-prompt-row"]}>
+          <IconButton
+            icon={<AddIcon />}
+            text={Locale.Context.Add}
+            bordered
+            className={chatStyle["context-prompt-button"]}
+            onClick={() =>
+              addContextPrompt({
+                role: "system",
+                content: "",
+                date: "",
+              })
+            }
+          />
+        </div>
+      </div>
     </>
   );
 }
