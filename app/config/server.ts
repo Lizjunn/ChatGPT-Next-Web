@@ -40,6 +40,6 @@ export const getServerSideConfig = () => {
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
-    apiHost: "http://106.55.158.200:8001",
+    apiHost: "https://106.55.158.200",
   };
 };
