@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 
 const OPENAI_URL = "api.openai.com";
-const DEFAULT_PROTOCOL = "https";
+const DEFAULT_PROTOCOL = "http";
 const PROTOCOL = process.env.PROTOCOL ?? DEFAULT_PROTOCOL;
 const BASE_URL = process.env.BASE_URL ?? OPENAI_URL;
 
